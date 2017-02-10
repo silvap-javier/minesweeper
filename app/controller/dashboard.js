@@ -12,6 +12,9 @@ app.controller("dashboard", function($scope,$timeout,$rootScope,$location,ngDial
     	$rootScope.typeView = 'intermediate';
     }
 
+    $scope.changeNivel = function(nivel){
+
+    }
 	$scope.createGame = function(){
 		apiTools
         .createGame()
@@ -19,6 +22,8 @@ app.controller("dashboard", function($scope,$timeout,$rootScope,$location,ngDial
         	$cookies.put('haveGame',true);
         	sessionControl.set('matrixGame',JSON.stringify(response.data.data));
             $cookies.put('idGame',response.data.idGame);
+            $cookies.put('mines',response.data.mines);
+            $rootScope.tools.mine = sessionControl.get('mines');
             var url = path +"#!/view_matrix";
             $window.location.href = url;
 	    });

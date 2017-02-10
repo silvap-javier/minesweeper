@@ -6,7 +6,7 @@
               <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">New game</a>
+              <a class="nav-link" ng-click="createGame()">New game</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Contact</a>
@@ -19,19 +19,41 @@
         <div class="panel panel-default">
 		  <!-- Default panel contents -->
 		  <div class="panel-heading">
-		  	div de time
-		  	div de minas
+		  	<div class="col-lg-12">
+			  	<div class="col-lg-4">
+			  		<button class="btn btn-primary" type="button">
+					  Time <span class="badge"><timer class="time-game" autostart="false" interval="1000">{{seconds}}</timer></span>
+					</button>
+			  	</div>
+			  	<div class="col-lg-4">
+			  		<div class="face"></div>
+			  	</div>
+			  	<div class="col-lg-4">
+			  		<button class="btn btn-primary" type="button">
+					  Mines <span class="badge">{{tools.mine}}</timer></span>
+					</button>
+			  	</div>
+		  	</div>
 		  </div>
 		  <div class="panel-body">
-		  </div>
+			  <div class="col-lg-12">
+				  <table class="matrix table table-bordered {{typeView}}"> 
+					  <tbody> 
+					  <tr ng-repeat="row in matrix"> 
+					  	<td ng-repeat="col in row" class="{{col.status}}" id="b-{{col.row}}-{{col.col}}" ng-mousedown="handleClick($event,col.row,col.col)" oncontextmenu="return false"></td> 
+					  </tr>  
+					  </tbody> 
+				  </table>
+			  </div>
 
-		  <table class="matrix table table-bordered {{typeView}}"> 
-			  <tbody> 
-			  <tr ng-repeat="row in matrix"> 
-			  	<td ng-repeat="col in row" class="{{col.status}}" ng-mousedown="handleClick($event,col.row,col.col)" oncontextmenu="return false"></td> 
-			  </tr>  
-			  </tbody> 
-		  </table>
+			  <div class="col-lg-12 content-button">
+			  	<div class="btn-group" role="group" aria-label="...">
+				  <button type="button" class="btn btn-default">Beginner</button>
+				  <button type="button" class="btn btn-default" ng-class="{active: typeView == 'intermediate'}">Intermediate</button>
+				  <button type="button" class="btn btn-default">Expert</button>
+				</div>
+			  </div>
+		  </div>
 		</div>
       </div>
 

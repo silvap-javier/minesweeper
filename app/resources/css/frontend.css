@@ -40,6 +40,10 @@
 .minesweeper td.flag {
     background-image: url(../img/flag.svg)!important;
 }
+ 
+.minesweeper td.mine {
+    background-image: url(../img/mine.svg)!important;
+}
 
 .minesweeper td.closed {
     border-bottom: solid 2px #7b7b7b;
@@ -55,3 +59,18 @@
     border-right: solid 2px #fff;
     border-top: solid 2px #7b7b7b;
     border-left: solid 2px #7b7b7b;}
+
+.minesweeper .nr{
+    border-left: solid 1px #7b7b7b;
+    border-top: solid 1px #7b7b7b;
+    border-bottom: none;
+    border-right: none;
+}
+
+.minesweeper .panel-default>.panel-heading{
+    overflow: hidden;
+}
+
+.minesweeper .content-button{
+    margin-top: 25px;
+}

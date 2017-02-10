@@ -1,4 +1,4 @@
-var app = angular.module("minesweeper", ['ngRoute','ngDialog','environment','ngCookies','angular-nicescroll']);
+var app = angular.module("minesweeper", ['ngRoute','ngDialog','environment','ngCookies','angular-nicescroll','timer']);
 
 app.config(function($routeProvider,envServiceProvider) {
     $routeProvider
@@ -6,7 +6,7 @@ app.config(function($routeProvider,envServiceProvider) {
         templateUrl : "view/matrix.html",
         controller: 'matrix'
     })
-    
+
     .when("/config", {
         templateUrl : "view/dashboard.html",
         controller: 'dashboard'
