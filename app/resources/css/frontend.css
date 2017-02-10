@@ -1,0 +1,11 @@
+.minesweeper .container {
+    max-width: 76rem;
+}
+
+.minesweeper .content-form{
+	width: 300px;
+	margin:auto;
+}
+.minesweeper .content-form .input-group{
+	width: 100%;
+}
