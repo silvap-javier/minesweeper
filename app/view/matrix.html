@@ -25,10 +25,10 @@
 		  <div class="panel-body">
 		  </div>
 
-		  <table class="table table-bordered"> 
+		  <table class="matrix table table-bordered {{typeView}}"> 
 			  <tbody> 
 			  <tr ng-repeat="row in matrix"> 
-			  	<td ng-repeat="col in row">{{col.value}}</td> 
+			  	<td ng-repeat="col in row" class="{{col.status}}" ng-mousedown="handleClick($event,col.row,col.col)" oncontextmenu="return false"></td> 
 			  </tr>  
 			  </tbody> 
 		  </table>

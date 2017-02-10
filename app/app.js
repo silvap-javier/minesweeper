@@ -3,12 +3,13 @@ var app = angular.module("minesweeper", ['ngRoute','ngDialog','environment','ngC
 app.config(function($routeProvider,envServiceProvider) {
     $routeProvider
     .when("/", {
-        templateUrl : "view/dashboard.html",
-        controller: 'dashboard'
-    })
-    .when("/view_matrix", {
         templateUrl : "view/matrix.html",
         controller: 'matrix'
+    })
+    
+    .when("/config", {
+        templateUrl : "view/dashboard.html",
+        controller: 'dashboard'
     })
 
 	envServiceProvider.config({
