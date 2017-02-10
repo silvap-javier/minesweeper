@@ -6,6 +6,10 @@ app.config(function($routeProvider,envServiceProvider) {
         templateUrl : "view/dashboard.html",
         controller: 'dashboard'
     })
+    .when("/view_matrix", {
+        templateUrl : "view/matrix.html",
+        controller: 'matrix'
+    })
 
 	envServiceProvider.config({
       domains: {
@@ -14,6 +18,7 @@ app.config(function($routeProvider,envServiceProvider) {
       },
       vars: {
         development: {
+          pathUrl: 'http://localhost/minesweeper/app/',
           apiUrl: 'http://localhost/minesweeper-api/api/',
           // antoherCustomVar: 'lorem', 
           // antoherCustomVar: 'ipsum' 

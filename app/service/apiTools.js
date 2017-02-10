@@ -3,9 +3,10 @@ app.service('apiTools',apiTools);
     apiTools.$inject = ["$http","$q","$rootScope","$location","sessionControl","envService"];
 
     function apiTools($http,$q,$rootScope,$location,sessionControl,envService) {
-        this.CreateGame = CreateGame;
+        this.createGame = createGame;
+        this.getGame = getGame;
 
-        function CreateGame() {
+        function createGame() {
             var baseApi = envService.read('apiUrl');
             var deferred = $q.defer();
             var url = baseApi + 'create_game';
@@ -22,4 +23,19 @@ app.service('apiTools',apiTools);
             return deferred.promise;
         }
 
+        function getGame() {
+            var baseApi = envService.read('apiUrl');
+            var deferred = $q.defer();
+            var url = baseApi + 'game';
+            
+            var config = {
+                headers: {},
+            };
+
+            $http.get(url, config)
+                .then(function (response) {
+                    deferred.resolve(response);
+                })
+            return deferred.promise;
+        }
     }
