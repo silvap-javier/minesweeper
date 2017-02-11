@@ -6,23 +6,18 @@
               <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">New game</a>
+              <a class="nav-link" ng-click="changeNivel('{{typeView}}')">New game</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+              <a class="nav-link" href="#!/game_list">Game List</a>
             </li>
           </ul>
         </nav>
       </div>
 
       <div class="jumbotron">
-        <h1 class="display-3">Game Settings</h1>
         <form class="bs-example bs-example-form content-form" data-example-id="simple-input-groups"> 
         
-        <div class="input-group"> 
-        	<input class="form-control" placeholder="Username" ng-model="game.username" aria-describedby="basic-addon1"> 
-        </div>
-
         <br> <div class="input-group"> <input class="form-control" placeholder="row" ng-model="game.row" placeholder="Recipient's username" aria-describedby="basic-addon2"></div> 
 
         <br> <div class="input-group"><input class="form-control" placeholder="column" ng-model="game.col" aria-label="Amount (to the nearest dollar)"></div>
@@ -30,7 +25,7 @@
         <br> <div class="input-group"><input class="form-control" placeholder="mines" ng-model="game.mines" ></div> <br> 
 
         </form>
-        <p><a class="btn btn-lg btn-success" ng-click="createGame()" role="button">Play</a></p>
+        <p><a class="btn btn-lg btn-success" ng-click="createGameCustom()" role="button">Play</a></p>
       </div>
 
       <footer class="footer">

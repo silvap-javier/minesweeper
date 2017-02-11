@@ -15,6 +15,13 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
     	$rootScope.typeView = 'beginner';
     }
 
+    if ($cookies.get('time')){
+    	$rootScope.tools.time = $cookies.get('time');
+    }else{
+    	$cookies.put('time',0);
+    	$rootScope.tools.time = 0;
+    }
+
     $scope.handleClick = function(evt,row,col) {
     	if (!$rootScope.runingTime){
     		self.time('start');
@@ -79,7 +86,11 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 					if (col == col_mark){
 						if ($rootScope.matrix[row][col].value != 'M'){
 							$rootScope.matrix[row][col].status = 'nr';
-							$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html($rootScope.matrix[row][col].value);
+							if ($rootScope.matrix[row][col].value != 0){
+								$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html($rootScope.matrix[row][col].value);
+							}else{
+								$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html('');								
+							}
 						}else{
 							$rootScope.matrix[row][col].status = 'explosion';
 							self.markAllMines();
@@ -106,6 +117,7 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 			}
 		}
 		self.time('clear');
+		$scope.openDialog('view/gameover.html');
 		$rootScope.game.status = false;
 		$rootScope.runingTime = true;
 	}
@@ -133,29 +145,41 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 	this.time = function(action){
 		switch(action) {
 		    case 'start':
+		        $rootScope.tools.time = 0;
 		        $('.time-game')[0].start();
     			$rootScope.runingTime = true;
 		        break;
 		   	case 'clear':
+		        $rootScope.tools.time = 0;
 		        $('.time-game')[0].clear();
     			$rootScope.runingTime = false;
 		        break;
 		} 
 	}
 
-	$scope.createGame = function(){
+	$rootScope.createGame = function(reload){
 		apiTools
         .createGame()
         .then(function (response) {
         	$cookies.put('haveGame',true);
         	sessionControl.set('matrixGame',JSON.stringify(response.data.data));
             $cookies.put('idGame',response.data.idGame);
+            $cookies.put('username',response.data.username);
             $cookies.put('mines',response.data.mines);
+            $rootScope.game.username = $cookies.get('username');
             $rootScope.tools.mine = $cookies.get('mines');
             $rootScope.matrix = JSON.parse(sessionControl.get('matrixGame'));
-            $rootScope.game.status = true;
-            self.cleanTable();
-            self.time('clear');
+            $timeout(function(){
+	            $rootScope.game.status = true;
+	            self.cleanTable();
+	            self.time('clear');
+		    }, 100);
+
+		    if (reload){
+		    	var url = path +"#!/";
+        		$window.location.href = url;
+		    }
+
 	    });
 	}
 
@@ -183,10 +207,12 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 		    	$rootScope.typeView = $cookies.get('typeView');
 		        break
 		}
-		$scope.createGame(); 
+		self.time('clear');
+		$rootScope.createGame(false); 
     }
 
     this.updateGame = function(){
+    	$cookies.put('time',parseInt($('timer').html())); 
 		apiTools
         .updateGame()
         .then(function (response) {
@@ -195,7 +221,7 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 
 
 	if (!$cookies.get('haveGame')){
-			$scope.createGame();
+			$rootScope.createGame(false);
     }else{
     	if ($cookies.get('idGame')){
 		apiTools
@@ -203,6 +229,9 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 	        .then(function (response) {
 		    	$rootScope.game.status = true;
 		    	$rootScope.tools.mine = $cookies.get('mines');
+            	self.time('clear');
+		    	$cookies.put('time',response.data.time);
+            	$rootScope.tools.time = $cookies.get('time');
 		    	$timeout(function(){
 			    	sessionControl.set('matrixGame',JSON.stringify(response.data.data.matrix));
 			    	$rootScope.matrix = JSON.parse(sessionControl.get('matrixGame'));
@@ -211,5 +240,9 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 		    });
 		}
     }
+
+    $scope.openDialog = function ($template) {
+        ngDialog.open({ template: $template, className: 'ngdialog-theme-default' });
+    };
 
 });

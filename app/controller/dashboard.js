@@ -12,21 +12,20 @@ app.controller("dashboard", function($scope,$timeout,$rootScope,$location,ngDial
     	$rootScope.typeView = 'intermediate';
     }
 
-    $scope.changeNivel = function(nivel){
 
-    }
-	$scope.createGame = function(){
-		apiTools
+	$scope.createGameCustom = function(){
+        $cookies.put('typeView','custom');
+        $rootScope.typeView = 'intermediate';
+        apiTools
         .createGame()
         .then(function (response) {
-        	$cookies.put('haveGame',true);
-        	sessionControl.set('matrixGame',JSON.stringify(response.data.data));
+            $cookies.put('haveGame',true);
             $cookies.put('idGame',response.data.idGame);
+            $cookies.put('username',response.data.username);
             $cookies.put('mines',response.data.mines);
-            $rootScope.tools.mine = sessionControl.get('mines');
-            var url = path +"#!/view_matrix";
+            var url = path +"#!/";
             $window.location.href = url;
-	    });
+        });
 	}
 
 });

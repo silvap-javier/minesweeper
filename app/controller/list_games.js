@@ -5,4 +5,16 @@ app.controller("list_games", function($scope,$timeout,$rootScope,$location,ngDia
 	$rootScope.game = {};
 	$rootScope.user = {};
 
+	apiTools
+        .getGames()
+        .then(function (response) {
+        	$scope.games = response.data.data;
+	    });
+
+	$scope.load_game = function(id){
+		$cookies.put('haveGame',true);
+		$cookies.put('idGame',id);
+		var url = path +"#!/";
+        $window.location.href = url;
+	}
 });

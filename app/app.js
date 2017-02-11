@@ -12,7 +12,7 @@ app.config(function($routeProvider,envServiceProvider) {
         controller: 'dashboard'
     })
 
-    .when("/list_games", {
+    .when("/game_list", {
         templateUrl : "view/list_games.html",
         controller: 'list_games'
     })

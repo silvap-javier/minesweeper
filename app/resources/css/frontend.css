@@ -96,3 +96,6 @@
 .minesweeper .content-button{
     margin-top: 25px;
 }
+.ngdialog.ngdialog-theme-default .ngdialog-content{
+    overflow: hidden;
+}

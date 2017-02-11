@@ -6,6 +6,7 @@ app.service('apiTools',apiTools);
         this.createGame = createGame;
         this.getGame = getGame;
         this.updateGame = updateGame;
+        this.getGames = getGames;
 
         function createGame() {
             var baseApi = envService.read('apiUrl');
@@ -45,12 +46,29 @@ app.service('apiTools',apiTools);
             var deferred = $q.defer();
             var url = baseApi + 'update_game';
             $rootScope.game.id = $cookies.get('idGame');
+            $rootScope.game.time = $cookies.get('time');
             var config = {
                 headers: {},
                 params:{game:$rootScope.game,matrix:$rootScope.matrix}
             };
 
             $http.post(url, config)
+                .then(function (response) {
+                    deferred.resolve(response);
+                })
+            return deferred.promise;   
+        }
+
+        function getGames(){
+            var baseApi = envService.read('apiUrl');
+            var deferred = $q.defer();
+            var url = baseApi + 'games/'+$cookies.get('username');
+
+            var config = {
+                headers: {},
+            };
+
+            $http.get(url, config)
                 .then(function (response) {
                     deferred.resolve(response);
                 })
