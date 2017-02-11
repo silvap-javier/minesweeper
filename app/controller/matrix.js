@@ -89,7 +89,8 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 							if ($rootScope.matrix[row][col].value != 0){
 								$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html($rootScope.matrix[row][col].value);
 							}else{
-								$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html('');								
+								$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html('');
+								self.revealedBlock($rootScope.matrix[row][col].row,$rootScope.matrix[row][col].col);																
 							}
 						}else{
 							$rootScope.matrix[row][col].status = 'explosion';
@@ -121,6 +122,8 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 		$rootScope.game.status = false;
 		$rootScope.runingTime = true;
 	}
+	
+
 
 	this.cleanTable = function(){
 		for(row in $rootScope.matrix){
@@ -134,9 +137,12 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 	this.markLastGame = function(){
 		for(row in $rootScope.matrix){
 			for (col in $rootScope.matrix[row]){
-				console.log($rootScope.matrix[row][col]);
 				if ($rootScope.matrix[row][col].status == "nr"){
-					$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html(parseInt($rootScope.matrix[row][col].value));
+					if ($rootScope.matrix[row][col].value != 0){
+						$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html(parseInt($rootScope.matrix[row][col].value));
+					}else{
+						$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html('');
+					}
 				}
 			}
 		}
@@ -244,5 +250,106 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
     $scope.openDialog = function ($template) {
         ngDialog.open({ template: $template, className: 'ngdialog-theme-default' });
     };
+
+    this.revealedBlock = function(row_selected,col_selected){
+    	self.revealedBlockLeft(row_selected,col_selected);
+    	self.revealedBlockRight(row_selected,col_selected);
+    	self.revealedBlockUp(row_selected,col_selected);
+    	self.revealedBlockDown(row_selected,col_selected);
+	}
+
+	this.revealedBlockLeft = function(row_selected,col_selected){
+		var row_start = row_selected;
+		var col_start = col_selected;
+		var flag = true;
+		var col_move = col_start-1;
+		while (flag){
+			if (col_move >= 1){
+				if ($rootScope.matrix[row_start][col_move].value == 0){
+					$rootScope.matrix[row_start][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_start][col_move].row+'-'+$rootScope.matrix[row_start][col_move].col).html('');
+				}else if($rootScope.matrix[row_start][col_move].value != 0 ){
+					$rootScope.matrix[row_start][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_start][col_move].row+'-'+$rootScope.matrix[row_start][col_move].col).html(parseInt($rootScope.matrix[row_start][col_move].value));
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+				col_move = col_move-1;
+		}
+	}
+
+	this.revealedBlockRight = function(row_selected,col_selected){
+		var row_start = row_selected;
+		var col_start = col_selected;
+		var flag = true;
+		var col_move = col_start+1;
+		while (flag){
+			if (col_move >= 1 && (!angular.isUndefined($rootScope.matrix[row_start][col_move]))){
+				if ($rootScope.matrix[row_start][col_move].value == 0){
+					$rootScope.matrix[row_start][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_start][col_move].row+'-'+$rootScope.matrix[row_start][col_move].col).html('');
+				}else if($rootScope.matrix[row_start][col_move].value != 0 ){
+					$rootScope.matrix[row_start][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_start][col_move].row+'-'+$rootScope.matrix[row_start][col_move].col).html(parseInt($rootScope.matrix[row_start][col_move].value));
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+				col_move = col_move+1;
+		}
+	}
+
+	this.revealedBlockUp = function(row_selected,col_selected){
+		var row_start = row_selected;
+		var col_start = col_selected;
+		var flag = true;
+		var col_move = col_start;
+		var row_move = row_start-1;
+		while (flag){
+			if (row_move >= 1 && (!angular.isUndefined($rootScope.matrix[row_move]))){
+				if ($rootScope.matrix[row_move][col_move].value == 0){
+					$rootScope.matrix[row_move][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_move][col_move].row+'-'+$rootScope.matrix[row_move][col_move].col).html('');
+					self.revealedBlockLeft($rootScope.matrix[row_move][col_move].row,$rootScope.matrix[row_move][col_move].col);
+					self.revealedBlockRight($rootScope.matrix[row_move][col_move].row,$rootScope.matrix[row_move][col_move].col);
+				}else if($rootScope.matrix[row_move][col_move].value != 0 ){
+					$rootScope.matrix[row_move][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_move][col_move].row+'-'+$rootScope.matrix[row_move][col_move].col).html(parseInt($rootScope.matrix[row_move][col_move].value));
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+			row_move = row_move-1;
+		}
+	}
+
+	this.revealedBlockDown = function(row_selected,col_selected){
+		var row_start = row_selected;
+		var col_start = col_selected;
+		var flag = true;
+		var col_move = col_start;
+		var row_move = row_start+1;
+		while (flag){
+			if (row_move >= 1 && (!angular.isUndefined($rootScope.matrix[row_move]))){
+				if ($rootScope.matrix[row_move][col_move].value == 0){
+					$rootScope.matrix[row_move][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_move][col_move].row+'-'+$rootScope.matrix[row_move][col_move].col).html('');
+					self.revealedBlockLeft($rootScope.matrix[row_move][col_move].row,$rootScope.matrix[row_move][col_move].col);
+					self.revealedBlockRight($rootScope.matrix[row_move][col_move].row,$rootScope.matrix[row_move][col_move].col);
+				}else if($rootScope.matrix[row_move][col_move].value != 0 ){
+					$rootScope.matrix[row_move][col_move].status = 'nr';
+					$('#b-'+$rootScope.matrix[row_move][col_move].row+'-'+$rootScope.matrix[row_move][col_move].col).html(parseInt($rootScope.matrix[row_move][col_move].value));
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+			row_move = row_move+1;
+		}
+	}
 
 });
