@@ -1,7 +1,6 @@
 app.controller("dashboard", function($scope,$timeout,$rootScope,$location,ngDialog,sessionControl,basicTools,$compile,apiTools,$q,envService,$window,$cookies) {
 	var self = this;
 	//Status
-    var path = envService.read('pathUrl');
 	$rootScope.game = {};
 	$rootScope.user = {};
 	
@@ -23,6 +22,7 @@ app.controller("dashboard", function($scope,$timeout,$rootScope,$location,ngDial
             $cookies.put('idGame',response.data.idGame);
             $cookies.put('username',response.data.username);
             $cookies.put('mines',response.data.mines);
+            var path = envService.read('pathUrl');
             var url = path +"#!/";
             $window.location.href = url;
         });

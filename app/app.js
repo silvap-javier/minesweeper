@@ -31,6 +31,7 @@ app.config(function($routeProvider,envServiceProvider) {
         },
         production: {
           apiUrl: 'http://hackzeit.co/projects/minesweeper-api/api/',
+          pathUrl: 'http://hackzeit.co/projects/minesweeper/app/',
           // antoherCustomVar: 'lorem', 
           // antoherCustomVar: 'ipsum' 
         }

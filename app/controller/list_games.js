@@ -1,7 +1,6 @@
 app.controller("list_games", function($scope,$timeout,$rootScope,$location,ngDialog,sessionControl,basicTools,$compile,apiTools,$q,envService,$window,$cookies) {
 	var self = this;
 	//Status
-    var path = envService.read('pathUrl');
 	$rootScope.game = {};
 	$rootScope.user = {};
 
@@ -14,6 +13,7 @@ app.controller("list_games", function($scope,$timeout,$rootScope,$location,ngDia
 	$scope.load_game = function(id){
 		$cookies.put('haveGame',true);
 		$cookies.put('idGame',id);
+		var path = envService.read('pathUrl');
 		var url = path +"#!/";
         $window.location.href = url;
 	}
