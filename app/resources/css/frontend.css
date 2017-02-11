@@ -10,9 +10,9 @@
 	width: 100%;
 }
 
-.minesweeper .table>tbody>tr>td{
+.minesweeper .table.matrix>tbody>tr>td{
 	width: 20px;
-    height: 30px;
+    height: 20px;
     margin: 0;
     padding: 0;
     font-weight: 700;
@@ -29,10 +29,20 @@
 }
 
 .minesweeper .table.intermediate{
-	width: 200px;
+    width: 320px;
 	margin: auto;
 }
+.minesweeper .table.beginner{
+    width: 160px;
+    margin: auto;
+}
+.minesweeper .table.expert{
+    width: 600px;
+    margin: auto;
+}
+.minesweeper .table.intermediate>tbody>tr>td td{
 
+}
 .panel{
 	padding-bottom: 20px;
 }
@@ -41,8 +51,20 @@
     background-image: url(../img/flag.svg)!important;
 }
  
-.minesweeper td.mine {
+.minesweeper td.mine,.minesweeper td.explosion{
     background-image: url(../img/mine.svg)!important;
+}
+
+.minesweeper td.falsemine {
+    background-image: url(../img/minestrike.svg)!important;
+}
+
+.minesweeper td.questionmark {
+    background-image: url(../img/questionmark.svg)!important;
+}
+
+.minesweeper td.explosion {
+    background-color: #f00!important;
 }
 
 .minesweeper td.closed {

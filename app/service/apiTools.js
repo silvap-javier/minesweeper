@@ -1,10 +1,11 @@
 app.service('apiTools',apiTools);
 
-    apiTools.$inject = ["$http","$q","$rootScope","$location","sessionControl","envService"];
+    apiTools.$inject = ["$http","$q","$rootScope","$location","sessionControl","envService","$cookies"];
 
-    function apiTools($http,$q,$rootScope,$location,sessionControl,envService) {
+    function apiTools($http,$q,$rootScope,$location,sessionControl,envService,$cookies) {
         this.createGame = createGame;
         this.getGame = getGame;
+        this.updateGame = updateGame;
 
         function createGame() {
             var baseApi = envService.read('apiUrl');
@@ -26,10 +27,10 @@ app.service('apiTools',apiTools);
         function getGame() {
             var baseApi = envService.read('apiUrl');
             var deferred = $q.defer();
-            var url = baseApi + 'game';
+            var url = baseApi + 'game/'+$cookies.get('idGame');
             
             var config = {
-                headers: {},
+                headers: {}
             };
 
             $http.get(url, config)
@@ -37,5 +38,22 @@ app.service('apiTools',apiTools);
                     deferred.resolve(response);
                 })
             return deferred.promise;
+        }
+
+        function updateGame(){
+            var baseApi = envService.read('apiUrl');
+            var deferred = $q.defer();
+            var url = baseApi + 'update_game';
+            $rootScope.game.id = $cookies.get('idGame');
+            var config = {
+                headers: {},
+                params:{game:$rootScope.game,matrix:$rootScope.matrix}
+            };
+
+            $http.post(url, config)
+                .then(function (response) {
+                    deferred.resolve(response);
+                })
+            return deferred.promise;   
         }
     }

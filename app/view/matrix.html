@@ -6,10 +6,10 @@
               <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" ng-click="createGame()">New game</a>
+              <a class="nav-link" ng-click="changeNivel('{{typeView}}')">New game</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+              <a class="nav-link" href="#!/list_games">Ver Partidas</a>
             </li>
           </ul>
         </nav>
@@ -36,7 +36,6 @@
 		  	</div>
 		  </div>
 		  <div class="panel-body">
-			  <div class="col-lg-12">
 				  <table class="matrix table table-bordered {{typeView}}"> 
 					  <tbody> 
 					  <tr ng-repeat="row in matrix"> 
@@ -44,13 +43,12 @@
 					  </tr>  
 					  </tbody> 
 				  </table>
-			  </div>
 
 			  <div class="col-lg-12 content-button">
 			  	<div class="btn-group" role="group" aria-label="...">
-				  <button type="button" class="btn btn-default">Beginner</button>
-				  <button type="button" class="btn btn-default" ng-class="{active: typeView == 'intermediate'}">Intermediate</button>
-				  <button type="button" class="btn btn-default">Expert</button>
+				  <button ng-click="changeNivel('beginner')" type="button" class="btn btn-default" ng-class="{active: typeView == 'beginner'}">Beginner</button>
+				  <button ng-click="changeNivel('intermediate')" type="button" class="btn btn-default" ng-class="{active: typeView == 'intermediate'}">Intermediate</button>
+				  <button ng-click="changeNivel('expert')" type="button" class="btn btn-default" ng-class="{active: typeView == 'expert'}">Expert</button>
 				</div>
 			  </div>
 		  </div>

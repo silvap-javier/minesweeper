@@ -12,6 +12,11 @@ app.config(function($routeProvider,envServiceProvider) {
         controller: 'dashboard'
     })
 
+    .when("/list_games", {
+        templateUrl : "view/list_games.html",
+        controller: 'list_games'
+    })
+
 	envServiceProvider.config({
       domains: {
         development: ['localhost'],

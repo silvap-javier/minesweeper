@@ -11,8 +11,8 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
     if ($cookies.get('typeView')){
     	$rootScope.typeView = $cookies.get('typeView');
     }else{
-    	$cookies.put('typeView','intermediate');
-    	$rootScope.typeView = 'intermediate';
+    	$cookies.put('typeView','beginner');
+    	$rootScope.typeView = 'beginner';
     }
 
     $scope.handleClick = function(evt,row,col) {
@@ -21,15 +21,21 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
     	}
 	    switch(evt.which) {
 	        case 1:
-	            self.showBlock(row,col);
-	            sessionControl.set('matrixGame',JSON.stringify($rootScope.matrix));
+	        	if ($rootScope.game.status){
+		            self.showBlock(row,col);
+		            sessionControl.set('matrixGame',JSON.stringify($rootScope.matrix));
+		            self.updateGame();
+	        	}
 	            break;
 	        case 2:
 	            // in case you need some middle click things
 	            break;
 	        case 3:
-	        	self.markFlag(row,col);
-	        	sessionControl.set('matrixGame',JSON.stringify($rootScope.matrix));
+	        	if ($rootScope.game.status){
+		        	self.markFlag(row,col);
+		        	sessionControl.set('matrixGame',JSON.stringify($rootScope.matrix));
+		        	self.updateGame();
+	        	}
 	            break;
 	    }
 	}
@@ -39,11 +45,31 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 			if (row == row_mark){
 				for (col in $rootScope.matrix[row]){
 					if (col == col_mark){
-						$rootScope.matrix[row][col].status = 'flag';
+						if ($rootScope.matrix[row][col].status != 'nr'){
+							if ($rootScope.matrix[row][col].status == 'flag'){
+								$rootScope.matrix[row][col].status = 'questionmark';
+								self.moreMines();
+							}else if($rootScope.matrix[row][col].status == 'questionmark'){
+								$rootScope.matrix[row][col].status = 'closed';
+							}else{
+								$rootScope.matrix[row][col].status = 'flag';
+								self.lessMines();
+							}
+						}
 					}
 				}
 			}
 		}
+	}
+
+	this.lessMines = function(){
+		$cookies.put('mines',parseInt($cookies.get('mines'))-1);
+        $rootScope.tools.mine = $cookies.get('mines');
+	}
+
+	this.moreMines = function(){
+		$cookies.put('mines',parseInt($cookies.get('mines'))+1);
+        $rootScope.tools.mine = $cookies.get('mines');
 	}
 
 	this.showBlock = function(row_mark,col_mark){
@@ -55,6 +81,7 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 							$rootScope.matrix[row][col].status = 'nr';
 							$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html($rootScope.matrix[row][col].value);
 						}else{
+							$rootScope.matrix[row][col].status = 'explosion';
 							self.markAllMines();
 							break;
 						}
@@ -68,17 +95,37 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 		for(row in $rootScope.matrix){
 			for (col in $rootScope.matrix[row]){
 				if ($rootScope.matrix[row][col].value == 'M'){
-					$rootScope.matrix[row][col].status = 'mine';
+					if ($rootScope.matrix[row][col].status == 'flag'){
+						$rootScope.matrix[row][col].status = 'falsemine';
+					}else{
+						if ($rootScope.matrix[row][col].status != 'explosion'){
+							$rootScope.matrix[row][col].status = 'mine';
+						}
+					}
 				}
 			}
 		}
 		self.time('clear');
+		$rootScope.game.status = false;
+		$rootScope.runingTime = true;
 	}
 
 	this.cleanTable = function(){
 		for(row in $rootScope.matrix){
 			for (col in $rootScope.matrix[row]){
 				$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html('');
+				$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).removeClass('nr');
+			}
+		}
+	}
+
+	this.markLastGame = function(){
+		for(row in $rootScope.matrix){
+			for (col in $rootScope.matrix[row]){
+				console.log($rootScope.matrix[row][col]);
+				if ($rootScope.matrix[row][col].status == "nr"){
+					$('#b-'+$rootScope.matrix[row][col].row+'-'+$rootScope.matrix[row][col].col).html(parseInt($rootScope.matrix[row][col].value));
+				}
 			}
 		}
 	}
@@ -106,6 +153,7 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
             $cookies.put('mines',response.data.mines);
             $rootScope.tools.mine = $cookies.get('mines');
             $rootScope.matrix = JSON.parse(sessionControl.get('matrixGame'));
+            $rootScope.game.status = true;
             self.cleanTable();
             self.time('clear');
 	    });
@@ -114,18 +162,54 @@ app.controller("matrix", function($scope,$timeout,$rootScope,$location,ngDialog,
 	$scope.changeNivel = function(nivel){
 		switch(nivel) {
 		    case 'beginner':
+		    	$rootScope.game.row = 8;
+		    	$rootScope.game.col = 8;
+		    	$rootScope.game.mines = 10;
+		    	$cookies.put('typeView','beginner');
+		    	$rootScope.typeView = $cookies.get('typeView');
 		        break;
 		   	case 'intermediate':
+		   		$rootScope.game.row = 16;
+		    	$rootScope.game.col = 16;
+		    	$rootScope.game.mines = 40;
+		    	$cookies.put('typeView','intermediate');
+		    	$rootScope.typeView = $cookies.get('typeView');
 		        break;
 		    case 'expert':
+		    	$rootScope.game.row = 16;
+		    	$rootScope.game.col = 30;
+		    	$rootScope.game.mines = 99;
+		    	$cookies.put('typeView','expert');
+		    	$rootScope.typeView = $cookies.get('typeView');
 		        break
-		} 
+		}
+		$scope.createGame(); 
     }
 
+    this.updateGame = function(){
+		apiTools
+        .updateGame()
+        .then(function (response) {
+	    });
+    }
+
+
 	if (!$cookies.get('haveGame')){
-		$scope.createGame();
+			$scope.createGame();
     }else{
-    	$rootScope.matrix = JSON.parse(sessionControl.get('matrixGame'));
+    	if ($cookies.get('idGame')){
+		apiTools
+	        .getGame()
+	        .then(function (response) {
+		    	$rootScope.game.status = true;
+		    	$rootScope.tools.mine = $cookies.get('mines');
+		    	$timeout(function(){
+			    	sessionControl.set('matrixGame',JSON.stringify(response.data.data.matrix));
+			    	$rootScope.matrix = JSON.parse(sessionControl.get('matrixGame'));
+		    		$timeout(self.markLastGame, 100);
+		    	}, 100);
+		    });
+		}
     }
 
 });
